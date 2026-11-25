@@ -20,18 +20,33 @@ def avg_rating_by_variety() -> str:
     # Prompt sugerido ao Copilot:
     # "Gere uma query SQLite que calcule a média de rating por variety na tabela
     #  wines, incluindo a contagem de vinhos, ordenada da maior média para a menor."
-    raise NotImplementedError("Implemente a query com o apoio do GitHub Copilot.")
+    return """
+        SELECT variety, AVG(rating) AS avg_rating, COUNT(*) AS total
+        FROM wines
+        GROUP BY variety
+        ORDER BY avg_rating DESC
+    """
 
 
 def top10_highest_rated() -> str:
     """Os 10 vinhos com maior ``rating``. Retorne as colunas: name, variety, rating."""
-    raise NotImplementedError("Implemente a query com o apoio do GitHub Copilot.")
+    return """
+        SELECT name, variety, rating
+        FROM wines
+        ORDER BY rating DESC
+        LIMIT 10
+    """
 
 
 def varieties_above_overall_avg() -> str:
     """Variedades cuja média de ``rating`` é MAIOR que a média geral de todos os
     vinhos. Use ``HAVING`` com uma subquery que calcula a média geral."""
-    raise NotImplementedError("Implemente a query com o apoio do GitHub Copilot.")
+    return """
+        SELECT variety, AVG(rating) AS avg_rating
+        FROM wines
+        GROUP BY variety
+        HAVING AVG(rating) > (SELECT AVG(rating) FROM wines)
+    """
 
 
 def wines_by_region_climate() -> str:
@@ -39,4 +54,9 @@ def wines_by_region_climate() -> str:
     média de rating. Faça um ``LEFT JOIN`` de ``regions`` com ``wines`` usando
     ``LIKE`` (wines.region é texto livre, ex: "Mendocino, California")."""
     # Dica de junção:  ON w.region LIKE '%' || r.region_name || '%'
-    raise NotImplementedError("Implemente a query com o apoio do GitHub Copilot.")
+    return """
+        SELECT r.climate, COUNT(w.region) AS total, AVG(w.rating) AS avg_rating
+        FROM regions AS r
+        LEFT JOIN wines AS w ON w.region LIKE '%' || r.region_name || '%'
+        GROUP BY r.climate
+    """
